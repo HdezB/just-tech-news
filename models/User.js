@@ -2,8 +2,12 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const bcrypt = require('bcrypt');
 // Create our User Model
-class User extends Model {}
-
+class User extends Model {
+    // Set up method to run on instace data (per user) to check password
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 // Define table columns and configuration
 User.init(
     {
@@ -20,7 +24,7 @@ User.init(
             // Turn on auto increment 
             autoIncrement: true
         },
-        
+
         // Define a username column
         username: {
             type: DataTypes.STRING,
@@ -35,7 +39,7 @@ User.init(
             unique: true,
             // if allowNull is set to false, we can run our data through validators before creating the table data
             validate: {
-              isEmail: true
+                isEmail: true
             }
         },
         // Define a password column
